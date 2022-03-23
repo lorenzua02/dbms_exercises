@@ -1,5 +1,8 @@
 import redis
 
+# Chiude il programma ogni volta
+close_everytime = False
+
 scelta = None
 redis = redis.Redis(host='localhost', port=6884, db=0, charset='utf-8', decode_responses=True)
 
@@ -65,3 +68,6 @@ while True:
         break
     else:
         print("Errore, per uscire premi 5")
+
+    if close_everytime:
+        break
