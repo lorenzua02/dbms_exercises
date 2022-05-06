@@ -16,9 +16,45 @@ def print_evento(e):
     print("\nPosti rimanenti:", e['posti_totali'])
 
 
-now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+def acquista(e, tipo_posto, quantity=1):
+    name = input("Inserisci nominativo: ")
+
+    # Scalo quantity-posti da posti_totali e dal tipo del posto
+    mongo.eventi.concerti.update_one({"_id": e["_id"]}, {
+        '$set': {
+            'posti_totali': e["posti_totali"]-quantity,
+            f'posti.{tipo_posto}.posti': e["posti"][tipo_posto]["posti"]-quantity
+            }}
+    )
+
+    # Genero biglietto
+    biglietto = {
+        "tipo_posto": tipo_posto,
+        "owner": name,
+        "concerto": {
+            "id": e["_id"],
+            "cantanti": e["cantanti"],
+            "dataora": e["dataora"],
+            "luogo": e["luogo"]
+        }
+    }
+    mongo.eventi.biglietti.insert_one(biglietto)
+
+
+def print_info_acquisto(e):
+    i = 1
+    scelte = []
+    for x in e["posti"].keys():
+        print(f'[{i}] - {x}: {e["posti"][x]["prezzo"]}EUR, {e["posti"][x]["posti"]} posti rimanenti')
+        scelte.append(x)
+        i += 1
+    decisione = int(input("> ")) - 1
+    # TODO AA
+    acquista(e, scelte[decisione])
+
 
 mongo = MongoClient('mongodb://localhost:37000/')
+now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 req = input("Inserisci nome artista: ")
 # TODO inserimento data "massima"
@@ -33,14 +69,14 @@ query = {
 }
 
 index = 0
-result = list(mongo.eventi.concerti.find(filter=query))
 
 while True:
+    result = list(mongo.eventi.concerti.find(filter=query))
     print_evento(result[index])
-    print("1 - Precedente")
-    print("2 - Successivo")
-    print("3 - Seleziona evento")
-    print("9 - Esci")
+    print("[1] - Precedente")
+    print("[2] - Successivo")
+    print("[3] - Seleziona evento")
+    print("[9] - Esci")
     scelta = int(input("> "))
     if scelta == 1 and index != 0:
         index -= 1
@@ -48,9 +84,12 @@ while True:
         index += 1
     elif scelta == 3:
         # TODO seleziona evento
+        print_info_acquisto(result[index])
         print("IDK")
     elif scelta == 9:
         break
+    else:
+        print("Invalido")
 
 mongo.close()
 print("Adios")
