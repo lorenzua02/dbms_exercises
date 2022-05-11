@@ -37,7 +37,6 @@ def print_evento(e):
 
 
 def acquista(e, tipo_posto, quantity=1, interrupt_after_purchase=True):
-    # TODO controllare che quantity non sfori il numero di posti disponibili
     names = []
     for _ in range(quantity):
         names.append(input("Inserisci nominativo/i: "))
@@ -83,16 +82,20 @@ def print_info_acquisto(e):
     while True:
         try:
             quantita = int(input("Inserisci numero biglietti da acquistare: "))
+            if quantita > e["posti"][scelte[decisione]]["posti"]:
+                print("Troppi posti selezionati")
+                input("Premi un tasto per continuare\n>")
             break
         except e:
-            print("Inserisci un numero")
-            continue
+            print("Input invalido")
+            input("Premi un tasto per continuare\n>")
+            # continue
     acquista(e, scelte[decisione], quantita)
 
 
 mongo = MongoClient('mongodb://localhost:37000/')
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-req = input("Inserisci nome artista: ")
+req = input("Inserisci nome artista: ").capitalize()
 max_distance_km = 50
 
 aggregate = [
