@@ -40,7 +40,10 @@ def print_info_acquisto(e):
             clear_console()
             print_evento(e)
             quantita = int(input("\nInserisci numero biglietti da acquistare: "))
-            break
+            if quantita > e["posti"][scelte[decisione]]["posti"]:
+                print("Troppi posti selezionati")
+                input("Premi un tasto per continuare\n>")
+                return
         except:
             print("Input invalido")
             input("Premi un tasto per continuare\n>")
