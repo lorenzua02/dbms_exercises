@@ -28,6 +28,7 @@ lon = data_json[0]["lon"]
 def print_evento(e):
     print("Data:", e['dataora'])
     print("Luogo:", e['luogo'])
+    print("Distanza:", round(e['distance'], 2), "km")
     cantanti = e['cantanti']
     print("Cantante/i:", cantanti[0], end='')
     for cantante in cantanti[1:]:
@@ -92,28 +93,34 @@ def print_info_acquisto(e):
 mongo = MongoClient('mongodb://localhost:37000/')
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 req = input("Inserisci nome artista: ")
-# TODO inserimento data "massima"
+max_distance_km = 50
 
-query = {
-    "$and": [
-        {"cantanti": {"$in": [req]}},
-        {"dataora": {"$gt": now}},
-        {"posti_totali": {"$gt": 0}},
-        {"geometry": {
-            "$near": {
-                "$geometry": {
-                    "type": "Point",
-                    "coordinates": [lon, lat]
-                }
-            }
-        }}
-    ]
-}
+aggregate = [
+    {
+        '$geoNear': {
+            'near': {
+                'type': 'Point',
+                'coordinates': [lon, lat]
+            },
+            'distanceField': 'distance',
+            'distanceMultiplier': 0.001
+        }
+    }, {
+        '$match': {
+            '$and': [
+                {'cantanti': {'$in': [req]}},
+                {'dataora': {'$gt': now}},
+                {'posti_totali': {'$gt': 0}},
+                {'distance': {"lt": max_distance_km}}
+            ]
+        }
+    }
+]
 
 index = 0
 
 while True:
-    result = list(mongo.eventi.concerti.find(filter=query))
+    result = list(mongo.eventi.concerti.aggregate(pipeline=aggregate))
     if not result:
         # TODO richiere l'input
         raise Exception("Artista non presente")
