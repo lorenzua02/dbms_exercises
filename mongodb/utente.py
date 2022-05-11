@@ -8,6 +8,25 @@ import datetime
 if __name__ != '__main__':
     raise Exception("Lanciami come programma principale grazie")
 
+#############################################
+
+import urllib.request
+import json
+apikey="&appid=790103a2a81e03e9dd13ec518a5a1690"
+# =============================================================================
+# prendo latitudine e longitudune
+url="http://api.openweathermap.org/geo/1.0/direct?q="
+citta=input("Inserisci il nome di una citta \n")
+if input("vuoi cercare in italia? (y/n)\n").lower()[0]=="y":
+    citta+=",it"
+full_url=url+citta+apikey
+response=urllib.request.urlopen(full_url)
+data=response.read()
+data_json = json.loads(data)
+lat=str(data_json[0]["lat"])
+lon=str(data_json[0]["lon"])
+
+#############################################
 
 def print_evento(e):
     print("Data:", e['dataora'])
@@ -83,8 +102,15 @@ query = {
     "$and": [
         {"cantanti": {"$in": [req]}},
         {"dataora": {"$gt": now}},
-        {"posti_totali": {"$gt": 0}}
-        # TODO luogo range < 7 km
+        {"posti_totali": {"$gt": 0}},
+        {"geometry": {
+            "$near": {
+                "$geometry": {
+                    "type": "Point" ,
+                    "coordinates": [ lon , lat ]
+                }
+            }
+        }}
     ]
 }
 
