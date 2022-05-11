@@ -2,35 +2,33 @@
 # Simone Daniele
 # Matias Maiorano
 
+import urllib.request
+import json
 from pymongo import MongoClient
 import datetime
 
 if __name__ != '__main__':
     raise Exception("Lanciami come programma principale grazie")
 
-#############################################
 
-import urllib.request
-import json
-apikey="&appid=790103a2a81e03e9dd13ec518a5a1690"
-# =============================================================================
-# prendo latitudine e longitudune
-url="http://api.openweathermap.org/geo/1.0/direct?q="
-citta=input("Inserisci il nome di una citta \n")
-if input("vuoi cercare in italia? (y/n)\n").lower()[0]=="y":
-    citta+=",it"
-full_url=url+citta+apikey
-response=urllib.request.urlopen(full_url)
-data=response.read()
-data_json = json.loads(data)
-lat=str(data_json[0]["lat"])
-lon=str(data_json[0]["lon"])
+# TODO prenderla da json esterno in .gitignore
+apikey = "&appid=790103a2a81e03e9dd13ec518a5a1690"
+url = "http://api.openweathermap.org/geo/1.0/direct?q="
 
-#############################################
+citta = input("Inserisci il nome di una citta \n")
+if input("vuoi cercare in italia? (y/n)\n").lower()[0] == "y":
+    citta += ",it"
+
+response = urllib.request.urlopen(url + citta + apikey)
+data_json = json.loads(response.read())
+lat = data_json[0]["lat"]
+lon = data_json[0]["lon"]
+
 
 def print_evento(e):
     print("Data:", e['dataora'])
     print("Luogo:", e['luogo'])
+    print("Distanza:", round(e['distance'], 2), "km")
     cantanti = e['cantanti']
     print("Cantante/i:", cantanti[0], end='')
     for cantante in cantanti[1:]:
@@ -50,7 +48,7 @@ def acquista(e, tipo_posto, quantity=1, interrupt_after_purchase=True):
             'posti_totali': e["posti_totali"] - quantity,
             f'posti.{tipo_posto}.posti': e["posti"][tipo_posto]["posti"] - quantity
         }}
-                                     )
+    )
 
     # Genero biglietto
     for name in names:
@@ -94,30 +92,35 @@ def print_info_acquisto(e):
 
 mongo = MongoClient('mongodb://localhost:37000/')
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
 req = input("Inserisci nome artista: ")
-# TODO inserimento data "massima"
+max_distance_km = 50
 
-query = {
-    "$and": [
-        {"cantanti": {"$in": [req]}},
-        {"dataora": {"$gt": now}},
-        {"posti_totali": {"$gt": 0}},
-        {"geometry": {
-            "$near": {
-                "$geometry": {
-                    "type": "Point" ,
-                    "coordinates": [ lon , lat ]
-                }
-            }
-        }}
-    ]
-}
+aggregate = [
+    {
+        '$geoNear': {
+            'near': {
+                'type': 'Point',
+                'coordinates': [lon, lat]
+            },
+            'distanceField': 'distance',
+            'distanceMultiplier': 0.001
+        }
+    }, {
+        '$match': {
+            '$and': [
+                {'cantanti': {'$in': [req]}},
+                {'dataora': {'$gt': now}},
+                {'posti_totali': {'$gt': 0}},
+                {'distance': {"lt": max_distance_km}}
+            ]
+        }
+    }
+]
 
 index = 0
 
 while True:
-    result = list(mongo.eventi.concerti.find(filter=query))
+    result = list(mongo.eventi.concerti.aggregate(pipeline=aggregate))
     if not result:
         # TODO richiere l'input
         raise Exception("Artista non presente")
