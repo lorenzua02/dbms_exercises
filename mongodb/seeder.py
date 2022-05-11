@@ -68,10 +68,12 @@ def crea(file, n_elementi):
         dict_posti = {}
         if pos == "stadio":
             for x in range(len(posti)):
-                dict_posti.update({stadio[x]: {"posti":posti[x],"prezzo": prezzo[x]}})
+                dict_posti.update(
+                    {stadio[x]: {"posti": posti[x], "prezzo": prezzo[x]}})
         if pos == "galleria":
             for x in range(len(posti)):
-                dict_posti.update({galleria[x]: {"posti":posti[x],"prezzo": prezzo[x]}})
+                dict_posti.update(
+                    {galleria[x]: {"posti": posti[x], "prezzo": prezzo[x]}})
 
         # __________________________________________
 
@@ -83,17 +85,124 @@ def crea(file, n_elementi):
 
         data = anno+"-"+mese+"-"+giorno+" "+ora+resto_
 
-        Luoghi = ["Casa di mia nonna",
-                  "Inferno",
-                  "San Siro",
-                  "Paradiso",
-                  "Teatro della Scala",
-                  "Oratorio di Desio",
-                  "Zurich",
-                  "Casa di Bossetti",
-                  "Gardaland",
-                  "ITSAR, Aula P2",
-                  "ITSAR, Ufficio di Alex"]
+        Luoghi = ["Milano",
+                  "Torino",
+                  "Genova",
+                  "Palermo",
+                  "Roma",
+                  "Firenze",
+                  "Venezia",
+                  "Perugia",
+                  "Napoli",
+                  "Bologna",
+                  "Trieste"]
+
+        coords = [{
+            "luogo": "Milano",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    9.189033508300781,
+                    45.46639130966522
+                ]
+            }
+        },
+            {
+            "luogo": "Torino",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    7.6827049255371085,
+                    45.06845915250033
+                ]
+            }
+        }, {
+            "luogo": "Genova",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    8.933730125427246,
+                    44.407082710908114
+                ]
+            }
+        }, {
+            "luogo": "Palermo",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    13.352680206298826,
+                    38.111042007788946
+                ]
+            }
+        }, {
+            "luogo": "Roma",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    12.492485046386719,
+                    41.89037781786264
+                ]
+            }
+        }, {
+            "luogo": "Firenze",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    11.248047351837158,
+                    43.765081538935185
+                ]
+            }
+        }, {
+            "luogo": "Venezia",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    12.33241081237793,
+                    45.424570085365076
+                ]
+            }
+        },
+            {
+            "luogo": "Perugia",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    12.387900352478026,
+                    43.11030422857738
+                ]
+            }
+        },
+            {
+            "luogo": "Napoli",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    14.246971607208252,
+                    40.8338138590956
+                ]
+            }
+        }, {
+            "luogo": "Bologna",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    11.343238949775696,
+                    44.49366989761399
+                ]
+            }
+        },
+            {
+            "luogo": "Trieste",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    13.7672,
+                    45.6480
+                ]
+            }
+        }
+        ]
+        print(coords)
 
         structure = {
             # "_id": "autogenerato",
@@ -102,8 +211,9 @@ def crea(file, n_elementi):
             "posti_totali": posti_totali,
             "posti": dict_posti,
             "dataora": data,
-            "luogo": "".join(random.sample(Luoghi, 1))
+            #"luogo": "".join(random.sample(Luoghi, 1))
         }
+        structure.update(coords[random.randint(0,len(coords)-1)])
 
         lst.append(structure)
 
