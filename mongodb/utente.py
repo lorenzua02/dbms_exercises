@@ -96,7 +96,7 @@ def print_info_acquisto(e):
 mongo = MongoClient('mongodb://localhost:37000/')
 now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 req = input("Inserisci nome artista: ").capitalize()
-max_distance_km = 50
+max_distance_km = 500
 
 aggregate = [
     {
@@ -114,7 +114,7 @@ aggregate = [
                 {'cantanti': {'$in': [req]}},
                 {'dataora': {'$gt': now}},
                 {'posti_totali': {'$gt': 0}},
-                {'distance': {"lt": max_distance_km}}
+                {'distance': {'$lt': max_distance_km}}
             ]
         }
     }
@@ -126,7 +126,8 @@ while True:
     result = list(mongo.eventi.concerti.aggregate(pipeline=aggregate))
     if not result:
         # TODO richiere l'input
-        raise Exception("Artista non presente")
+        # TODO se non ritorna nulla mostrare il più vicino anche fuori range
+        raise Exception("Artista non presente (prova ad aumentare la distanza)")
     print_evento(result[index])
     print("[1] - Precedente")
     print("[2] - Successivo")
