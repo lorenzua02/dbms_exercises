@@ -37,6 +37,25 @@ class Neo4jModel:
                         label=label, 
                         destination_id=destination_id)
    
+    def return_node(self, node_id=None, label=None):
+        # TODO prevedere la return per parametri dei nodi 
+        assert node_id is not None and label is None
+        assert node_id is None and label is not None
+        
+        if label:
+            with self.driver.session() as session:
+                return session.run("""MATCH (n: $label) RETURN n""")
+        
+        with self.driver.session() as session:
+            return session.run("""MATCH (n)
+                        WHERE id(n) = $node_id
+                        RETURN n""", node_id=node_id)
+
+    def return_label(self, node_id):
+        with self.driver.session() as session:
+            return session.run("""MATCH (n)
+                        WHERE id(n) = $node_id
+                        RETURN labels(n)""", node_id=node_id)
     
     def empty_database(self):
         with self.driver.session() as session:
