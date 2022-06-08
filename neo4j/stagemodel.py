@@ -3,6 +3,7 @@ import traceback
 
 
 class Neo4jModel:
+    
     def __init__(self, uri, username="", password=""):
         self.driver = GraphDatabase.driver(uri, auth=(username, password))
         print(f"Collegato al database {uri}")
@@ -25,8 +26,14 @@ class Neo4jModel:
 
     def create_link(self, origin_id, destination_id, label):
         with self.driver.session() as session:
-            session.run("...")
-
+            session.run("""MATCH (a),(b)
+                        WHERE id(a) = $origin_id and id(b) = $destination_id
+                        CREATE (a)-[r:$label]->(b)""", 
+                        origin_id=origin_id, 
+                        label=label, 
+                        destination_id=destination_id)
+   
+    
     def empty_database(self):
         with self.driver.session() as session:
             return session.run("match (n) detach delete n return count(n)").single()[0]
