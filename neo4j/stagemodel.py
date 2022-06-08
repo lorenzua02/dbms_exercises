@@ -1,3 +1,5 @@
+import json
+
 from neo4j import GraphDatabase
 import traceback
 
@@ -12,16 +14,18 @@ class Neo4jModel:
             self.driver.close()
             print(f"Scollegato dal database {self.driver}.")
 
-    def create_node(self, label, **kargs):
+    def create_node(self, label, **parms):
+        # TODO generalizzazione n label (parm "label" -> array)
         """
         - Professor: name, surname, subject
         - Company: name, desc
         - Student: name, course
         """
-        assert label in ['S', 'P', 'C']
-        # TODO controllo kargs in funziona alla label
-        # query = CREATE(n:$label {tutti i kargs}) RETURN n
-        # return id di n
+        diz = json.dumps(parms)
+        with self.driver.session() as session:
+            id_nodo = session.run(f"CREATE (n:$label {diz}) RETURN id(n)", label=label)
+
+        return id_nodo
 
     def create_link(self, origin_id, destination_id, label):
         with self.driver.session() as session:
