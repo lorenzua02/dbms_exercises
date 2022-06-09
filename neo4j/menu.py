@@ -1,5 +1,5 @@
 import os
- 
+from stagemodel import Neo4jModel as n4j
 
 def create_node():
     os.system("cls")
