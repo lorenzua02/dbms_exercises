@@ -1,5 +1,5 @@
 import os
-import menu
+ 
 
 def create_node():
     os.system("cls")
@@ -33,7 +33,7 @@ def create_node():
 def main_menu():
     while True:
         os.system("cls")
-        print('[Menu]\n\n|[1]| Crea nodo\n|[2]| Crea relazione\n|[3]| Cancella nodo\n|[4]| Cancella relazione\n|[5]| Cerca il miglior prof\n|[9]| Esci\n')
+        print('[Menu]\n\n|[1]| Crea nodo\n|[2]| Crea relazione\n|[3]| Cancella nodo\n|[4]| Cancella relazione\n|[5]| Cerca il miglior prof\n|[6]| Cancella il database\n|[9]| Esci\n')
         option = input("Inserisci scelta: ")
 
         try:
@@ -63,5 +63,7 @@ def main_menu():
             continue
         elif option == 5:
             continue
+        elif option == 6:
+            n4j.empty_database()
         else:
             continue
