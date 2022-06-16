@@ -55,6 +55,7 @@ class Neo4jModel:
             return session.run(f"MATCH (n:{label} " + diz + ") RETURN id(n)").data()[0]['id(n)']
 
     def create_link(self, origin_id, destination_id, label, **parms):
+        label = label.upper()
         diz = self.ristruttura_dict(parms)
         with self.driver.session() as session:
             session.run(f"""MATCH (a),(b)
