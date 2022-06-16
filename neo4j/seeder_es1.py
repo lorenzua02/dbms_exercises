@@ -7,23 +7,29 @@ neo.create_node('rifugio', nome='rifugio del dragone', capacita_max=100)
 neo.create_node('rifugio', nome='rifugio del peccatore', capacita_max=30)
 neo.create_node('rifugio', nome='rifugio del cornuto', capacita_max=69)
 
-# neo.create_node('partenza', nome='partenza del dragone')
-# neo.create_link('SENTIERO', 
-#                 origin_id=neo.get_id('partenza', nome='partenza del dragone'), 
-#                 destination_id=neo.get_id('arrivo', nome='arrivo del dragone'),
-#                 nome='sentiero del dragone', difficolta=8, tempo_percorrenza='3H', numero=1)           
-# neo.create_node('arrivo', nome='sentiero del dragone')
+p = neo.create_node('partenza', nome='partenza del dragone')
+a = neo.create_node('arrivo', nome='sentiero del dragone')
+neo.create_link('SENTIERO', 
+                origin_id=p, 
+                destination_id=a,
+                nome='sentiero del dragone', difficolta=8, tempo_percorrenza='3H', numero=1)           
 
-# neo.create_node('partenza', nome='sentiero del peccatore')
-# neo.create_link('SENTIERO', nome='sentiero del peccatore',
-#                 difficolta=4, tempo_percorrenza='2H', numero=14)
-# neo.create_node('arrivo', nome='sentiero del peccatore')
+p = neo.create_node('partenza', nome='sentiero del peccatore')
+a = neo.create_node('arrivo', nome='sentiero del peccatore')
+neo.create_link('SENTIERO',  
+                origin_id=p, 
+                destination_id=a,
+                nome='sentiero del peccatore',
+                difficolta=4, tempo_percorrenza='2H', numero=14)
 
-# neo.create_node('partenza', nome='sentiero del cornuto')
-# neo.create_link('SENTIERO', nome='sentiero del cornuto',
-#                 difficolta=3, tempo_percorrenza='15M', numero=3)
-# neo.create_node('arrivo', nome='sentiero del cornuto')
+p = neo.create_node('partenza', nome='sentiero del cornuto')
+a = neo.create_node('arrivo', nome='sentiero del cornuto')
+neo.create_link('SENTIERO',  
+                origin_id=p, 
+                destination_id=a,
+                nome='sentiero del cornuto',
+                difficolta=3, tempo_percorrenza='15M', numero=3)
 
-# neo.create_node('punto_panoramico', altezza=2000)
-# neo.create_node('punto_panoramico', altezza=3251)
-# neo.create_node('punto_panoramico', altezza=503)
+neo.create_node('punto_panoramico', altezza=2000)
+neo.create_node('punto_panoramico', altezza=3251)
+neo.create_node('punto_panoramico', altezza=503)
