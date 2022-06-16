@@ -8,22 +8,22 @@ neo.create_node('rifugio', nome='rifugio del peccatore', capacita_max=30)
 neo.create_node('rifugio', nome='rifugio del cornuto', capacita_max=69)
 
 p = neo.create_node('partenza', nome='partenza del dragone')
-a = neo.create_node('arrivo', nome='sentiero del dragone')
+a = neo.create_node('arrivo', nome='arrivo del dragone')
 neo.create_link('SENTIERO', 
                 origin_id=p, 
                 destination_id=a,
                 nome='sentiero del dragone', difficolta=8, tempo_percorrenza='3H', numero=1)           
 
-p = neo.create_node('partenza', nome='sentiero del peccatore')
-a = neo.create_node('arrivo', nome='sentiero del peccatore')
+p = neo.create_node('partenza', nome='partenza del peccatore')
+a = neo.create_node('arrivo', nome='arrivo del peccatore')
 neo.create_link('SENTIERO',  
                 origin_id=p, 
                 destination_id=a,
                 nome='sentiero del peccatore',
                 difficolta=4, tempo_percorrenza='2H', numero=14)
 
-p = neo.create_node('partenza', nome='sentiero del cornuto')
-a = neo.create_node('arrivo', nome='sentiero del cornuto')
+p = neo.create_node('partenza', nome='partenza del cornuto')
+a = neo.create_node('arrivo', nome='arrivo del cornuto')
 neo.create_link('SENTIERO',  
                 origin_id=p, 
                 destination_id=a,
