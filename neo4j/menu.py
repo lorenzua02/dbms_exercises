@@ -2,6 +2,17 @@ import os
 import menu
 from stagemodel import Neo4jModel
 
+'''menu
+[Menu]
+|[1]| Crea nodo
+|[2]| Crea relazione
+|[3]| Cancella nodo
+|[4]| Cancella relazione
+|[5]| Cerca il miglior prof
+|[6]| Pulizia del database
+|[9]| Esci
+'''
+
 
 def create_node(neo4j_model):
     os.system("cls")
@@ -23,7 +34,7 @@ def create_node(neo4j_model):
         result = neo4j_model.create_node("S", name=name, course=course)
         if result != -1:
             print("Creazione alunno riuscita")
-            print("Id:", result)
+            # print("Id:", result)
         else:
             print("Creazione alunno non riuscita")
         input("Continua...")
@@ -38,20 +49,20 @@ def create_node(neo4j_model):
             "P", name=name, surname=surname, subject=subject)
         if result != -1:
             print("Creazione professore riuscita")
-            print("Id:", result)
+            # print("Id:", result)
         else:
             print("Creazione professore non riuscita")
         input("Continua...")
 
     elif option_create_node == 3:
         print("\nCreazione azienda: \n")
-        # Funzione Create Professore
+        # Funzione Create Azienda
         name = input("Inserisci il nome: ")
         desc = input("Inserisci la descrizione: ")
         result = neo4j_model.create_node("C", name=name, desc=desc)
         if result != -1:
             print("Creazione azienda riuscita")
-            print("Id:", result)
+            # print("Id:", result)
         else:
             print("Creazione azienda non riuscita")
         input("Continua...")
@@ -60,35 +71,121 @@ def create_node(neo4j_model):
 
 def create_relation(neo4j_model):
     os.system("cls")
-    print('[Menu -> Crea relazione]\n\n')
-    name_node = input("Inserisci il nome d'origine: ")
-    id_origin_node = neo4j_model.return_node(label=name_node)
-    if id_origin_node == -1:
-        print("Nome non trovato")
-        input("Continua...")
+    print('[Menu -> Crea relazione]\n\n|[1]| Prof -> Alunno : insegna_a\n|[2]| Alunno -> Azienda : lavora_in\n|[3]| Prof -> Azienda : contatto_in\n|[9]| Torna indietro\n')
+    option_create_relation = input("Inserisci scelta: ")
+    try:
+        option_create_relation = int(option_create_relation)
+    except:
+        # Scelta non presente
+        option_create_relation = -1
+    if option_create_relation == 9:
         return 0
-    name_node = input("Inserisci il nome di destinazione: ")
-    id_destination_node = neo4j_model.return_node(label=name_node)
-    if id_destination_node == -1:
-        print("Nome non trovato")
-        input("Continua...")
-        return 0
-    relation_name = input("Inserisci il nome della relazione: ")
-    result = neo4j_model.create_link(id_origin_node, id_destination_node, relation_name)
-    if result != -1:
-        print("Relazione creata")
-        input("Continua...")
-        return 0
-    else: 
-        print("Relazione non creata")
-        input("Continua...")
+    
+    elif option_create_relation == 1:
+        error = False
+        print("\nCreazione relazione Prof -> Alunno : insegna_a \n")
+        # Funzione relazione prof -> alunno : insegna
+        print("Inserisci i dati del professore")
+        name = input("Inserisci il nome: ")
+        surname = input("Inserisci il cognome: ")
+        subject = input("Inserisci la materia: ")
+        try:
+            origin_id = neo4j_model.get_id(label='P', name=name, surname=surname, subject=subject)
+        except:
+            print('Problema nel trovare il nodo')
+            error = True
+            input('Continua...')
+        if not error:
+            print("Inserisci i dati dell' alunno")
+            name = input("Inserisci il nome: ")
+            course = input("Inserisci il corso: ")
+            try:
+                destination_id = neo4j_model.get_id(label='S', name=name, course=course)
+            except:
+                print('Problema nel trovare il nodo')
+                error = True
+                input('Continua...')
+            if not error:
+                result = neo4j_model.create_link(origin_id, destination_id, 'insegna_a')
+                if result != -1:
+                    print("Creazione relazione riuscita")
+                    # print("Id:", result)
+                else:
+                    print("Creazione relazione non riuscita")
+                input("Continua...")
+        
+    elif option_create_relation == 2:
+        error = False
+        print("\nCreazione relazione Alunno -> Azienda : lavora_in \n")
+        # Funzione relazione Alunno -> Azienda : lavora_in
+        print("Inserisci i dati dell' alunno")
+        name = input("Inserisci il nome: ")
+        course = input("Inserisci il corso: ")
+        try:
+            origin_id = neo4j_model.get_id(label='S', name=name, course=course)
+        except:
+            print('Problema nel trovare il nodo')
+            error = True
+            input('Continua...')
+        if not error:
+            print("Inserisci i dati dell'azienda")
+            name = input("Inserisci il nome: ")
+            desc = input("Inserisci la descrizione: ")
+            try:
+                destination_id = neo4j_model.get_id(label='C', name=name, desc=desc)
+            except:
+                print('Problema nel trovare il nodo')
+                error = True
+                input('Continua...')
+            if not error:
+                result = neo4j_model.create_link(origin_id, destination_id, 'lavora_in')
+                if result != -1:
+                    print("Creazione relazione riuscita")
+                    # print("Id:", result)
+                else:
+                    print("Creazione relazione non riuscita")
+                input("Continua...")
+                
+    elif option_create_relation == 3:
+        error = False
+        print("\nCreazione relazione Prof -> Azienda : contatto_in \n")
+        # Funzione relazione Prof -> Azienda : contatto_in
+        print("Inserisci i dati del professore")
+        name = input("Inserisci il nome: ")
+        surname = input("Inserisci il cognome: ")
+        subject = input("Inserisci la materia: ")
+        try:
+            origin_id = neo4j_model.get_id(label='P', name=name, surname=surname, subject=subject)
+        except:
+            print('Problema nel trovare il nodo')
+            error = True
+            input('Continua...')
+        if not error:
+            print("Inserisci i dati dell'azienda")
+            name = input("Inserisci il nome: ")
+            desc = input("Inserisci la descrizione: ")
+            try:
+                destination_id = neo4j_model.get_id(label='C', name=name, desc=desc)
+            except:
+                print('Problema nel trovare il nodo')
+                error = True
+                input('Continua...')
+            if not error:
+                result = neo4j_model.create_link(origin_id, destination_id, 'lavora_in')
+                if result != -1:
+                    print("Creazione relazione riuscita")
+                    # print("Id:", result)
+                else:
+                    print("Creazione relazione non riuscita")
+                input("Continua...")
+                
     return 0
 
 
 def main_menu(neo4j_model):
     while True:
         os.system("cls")
-        print('[Menu]\n\n|[1]| Crea nodo\n|[2]| Crea relazione\n|[3]| Cancella nodo\n|[4]| Cancella relazione\n|[5]| Cerca il miglior prof\n|[9]| Esci\n')
+        print('[Menu]\n\n|[1]| Crea nodo\n|[2]| Crea relazione\n|[3]| Cancella nodo\n|[4]| Cancella relazione\n|[5]| Cerca il miglior prof\n|[6]| Pulizia del database\n|[9]| Esci\n')
         option = input("Inserisci scelta: ")
 
         try:
@@ -102,7 +199,7 @@ def main_menu(neo4j_model):
             os.system("cls")
             break
 
-        elif option not in [x for x in range(0, 6)]:
+        elif option not in [x for x in range(0, 7)]:
             print("Scelta non presente")
             input("Premi un tasto per continuare")
             continue
@@ -119,6 +216,10 @@ def main_menu(neo4j_model):
             continue
         elif option == 5:
             continue
+        elif option == 6:
+            neo4j_model.empty_database()
+            print('Database pulito')
+            input('Continua...')
         else:
             continue
 
