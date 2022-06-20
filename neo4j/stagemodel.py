@@ -17,7 +17,7 @@ class Neo4jModel:
 
     def ristruttura_dict(self, d: dict):
 
-        res = "{"
+        res = "{ "
         for x in d.keys():
             if type(d[x]) == str:
                 res += f"{x}: \"{d[x]}\""
