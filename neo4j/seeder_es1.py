@@ -12,7 +12,7 @@ a = neo.create_node('arrivo', nome='arrivo del dragone')
 neo.create_link('SENTIERO', 
                 origin_id=p, 
                 destination_id=a,
-                nome='sentiero del dragone', difficolta=8, tempo_percorrenza='3H', numero=1)           
+                nome='sentiero del dragone', difficolta=8, tempo_percorrenza=3, numero=1)           
 
 p = neo.create_node('partenza', nome='partenza del peccatore')
 a = neo.create_node('arrivo', nome='arrivo del peccatore')
@@ -20,7 +20,7 @@ neo.create_link('SENTIERO',
                 origin_id=p, 
                 destination_id=a,
                 nome='sentiero del peccatore',
-                difficolta=4, tempo_percorrenza='2H', numero=14)
+                difficolta=4, tempo_percorrenza=2, numero=14)
 
 p = neo.create_node('partenza', nome='partenza del cornuto')
 a = neo.create_node('arrivo', nome='arrivo del cornuto')
@@ -28,7 +28,7 @@ neo.create_link('SENTIERO',
                 origin_id=p, 
                 destination_id=a,
                 nome='sentiero del cornuto',
-                difficolta=3, tempo_percorrenza='15M', numero=3)
+                difficolta=3, tempo_percorrenza=0.25, numero=3)
 
 neo.create_node('punto_panoramico', altezza=2000)
 neo.create_node('punto_panoramico', altezza=3251)
