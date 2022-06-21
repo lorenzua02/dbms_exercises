@@ -94,24 +94,9 @@ class Scuola(Neo4jModel):
     # cercare il miglior prof che può fungere da collegamento con l'azienda
 
     def best_prof(self, id_azienda):
-        '''
-        dovremmo trovare il prof che ha più alunni in modo tale da dire che:
-        l'azienda ha trovato il prof con il maggior numero di possibili dipendenti
-
-        qwerry 1 (trovare i prof connessi all'azienda) --> list[id(prof)]
-            # qwerry 1.1 (trovare gli alunni di ogni prof) 
-            # qwerry 1.2 (trovare gli alunni che lavorano nell'azienda) 
-        qwerry 2 (trovare gli alunni in comune tra azienda e prof) 
-        il primo risultato e' il prof con piu' alunni nell'azienda 
-
-        '''
+        '''Dato un id_azienda, restituisce un array di dizionari contenente i migliori 3 prof'''
+        
         with self.driver.session() as session:
-            """MATCH (p: P)-[:INSEGNA_A]->(s:S), (p)-[:CONTATTO_IN]->(a:C) 
-                    
-                        WHERE (s)-[:LAVORA_IN]->(a) 
-                        AND id(a) = 74
-                        RETURN p
-                        LIMIT 1"""
             return session.run(f"""
                         MATCH (p: P)-[:INSEGNA_A]->(s:S), (p)-[:CONTATTO_IN]->(a:C)
                         WHERE (s)-[:LAVORA_IN]->(a)
@@ -125,12 +110,12 @@ class Montagna(Neo4jModel):
     def __init__(self, uri, username="", password=""):
         super().__init__(uri, username, password)
 
-    # proporre il percorso entro distanze definite per un certo numero di persone.
-    # Es "percorso tra 24h e 48h per 5 persone e 1 rifugio"
-    # 15 minuti == 0.25 -- 1 ora == 1
+    # proporre il percorso entro distanze definite per un certo numero di persone
+    # Tempistica espressa in ore (30 min = 0.5)
     def best_track(self, n_persone, ora_min, ora_max):
         assert type(ora_min) == int and type(ora_max) == int
         with self.driver.session() as session:
+            # TODO
             """
             MATCH percorso=(p:partenza)-[:SENTIERO*]-(a:arrivo)
             return 
@@ -141,19 +126,3 @@ class Montagna(Neo4jModel):
             WHERE {ora_min} < tempototale < {ora_max}
             limit 3
             """
-
-
-if __name__ == "__main__":
-    model = Neo4jModel("bolt://localhost:7687")
-    # id_nodo = model.create_node(label="S", name="maio",course="ML")
-    # print(model.return_node(id_nodo, "S"))
-    model.empty_database()
-
-    model.create_node(label="S", name="aaa", course="aa")
-
-    id_nodo = model.create_node(label="S", name="lollo", course="MLa")
-    # print(id_nodo)
-    print(model.return_node(label="S"))
-    #print(Neo4jModel("bolt://localhost:7687").return_node(label= 'rifugio').data())
-    # for n in Neo4jModel("bolt://localhost:7687").return_node(label= 'rifugio'):
-    #     print(n)

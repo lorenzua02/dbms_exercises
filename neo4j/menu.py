@@ -3,7 +3,7 @@ import menu
 from stagemodel import Neo4jModel, Scuola
 from seeder_es2 import seeder
 
-'''menu
+'''
 [Menu]
 |[1]| Crea nodo
 |[2]| Crea relazione
@@ -196,51 +196,54 @@ def delete_node(neo4j_model):
 
     elif option_delete_node == 1:
         print("\nCancellazione alunno: \n")
-        # Funzione Cancella Alunno
         name = input("Inserisci il nome: ")
         course = input("Inserisci il corso: ")
+        
         try:
             result = neo4j_model.delete_node(neo4j_model.get_id("S", name=name, course=course))
         except:
             result = -1
+            
         if result != -1:
             print("Cancellazione alunno riuscita")
-            # print("Id:", result)
         else:
             print("Cancellazione alunno non riuscita")
+            
         input("Continua...")
         
     elif option_delete_node == 2:
         print("\nCancellazione professore: \n")
-        # Funzione Cancella Professore
         name = input("Inserisci il nome: ")
         surname = input("Inserisci il cognome: ")
         subject = input("Inserisci la materia: ")
+        
         try:
             result = neo4j_model.delete_node(neo4j_model.get_id("P", name=name, surname=surname, subject=subject))
         except:
             result = -1
+            
         if result != -1:
             print("Cancellazione professore riuscita")
-            # print("Id:", result)
         else:
             print("Cancellazione professore non riuscita")
+            
         input("Continua...")
 
     elif option_delete_node == 3:
         print("\nCancellazione azienda: \n")
-        # Funzione Cancella Azienda
         name = input("Inserisci il nome: ")
         desc = input("Inserisci la descrizione: ")
+        
         try:
             result = neo4j_model.delete_node(neo4j_model.get_id("C", name=name, desc=desc))
         except:
             result = -1
+            
         if result != -1:
             print("Cancellazione azienda riuscita")
-            # print("Id:", result)
         else:
             print("Cancellazione azienda non riuscita")
+            
         input("Continua...")
     return 0
 
@@ -263,11 +266,11 @@ def find_best(neo4j_model):
             result = neo4j_model.best_prof(neo4j_model.get_id("C", name=name, desc=desc))
         except:
             result = -1
+            
         if result != -1:
             print("Risultati trovati:")
             for x in result:
                 print(x['p']['name'], x['p']['surname'], f"({x['p']['subject']})")
-            # print("Id:", result)
         else:
             print("Nessun match trovato")
         input("Continua...")
