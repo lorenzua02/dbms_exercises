@@ -2,42 +2,21 @@ import random
 import json
 
 
-def crea(file, n_elementi):
-    lst = []
-    for x in range(n_elementi):
-        cantanti = [
-            "Tiziano Ferro",
-            "Vasco Rossi",
-            "883",
-            "Jovanotti",
-            "Paky",
-            "Tedua",
-            "Laura Pausini",
-            "Simone Panetti",
-            "I Mates",
-            "Maneskin",
-            "Bresh",
-            "Disme",
-            "Vaz Te",
-            "Ghali",
-            "Massimo Pericolo",
-            "Izi",
-            "Salmo",
-            "Sfera Ebbasta",
-            "Rkomi",
-            "Lazza",
-            "Gue",
-        ]
+def crea(filename, n_elementi):
+    res = []
+    cantanti = ["Tiziano Ferro", "Vasco Rossi", "883", "Jovanotti", "Paky", "Tedua", "Laura Pausini",
+                "Simone Panetti", "I Mates", "Maneskin", "Bresh", "Disme", "Vaz Te", "Ghali",
+                "Massimo Pericolo", "Izi", "Salmo", "Sfera Ebbasta", "Rkomi", "Lazza", "Gue"]
+    stadio = ["vip", "anello1", "anello2", "prato"]
+    galleria = ["platea", "vip", "sopra"]
+    luoghi = [stadio, galleria]
 
-        stadio = ["vip", "anello1", "anello2", "prato"]
-        galleria = ["platea", "vip", "sopra"]
+    for _ in range(n_elementi):
         np_galleria = random.randint(200, 500)
         np_stadio = random.randint(2000, 5000)
-        luoghi = [stadio, galleria]
+        luogo = random.choice(luoghi)
 
-        luogo = luoghi[random.randint(0, 1)]
-
-        if luogo == ["vip", "anello1", "anello2", "prato"]:  # stadio
+        if luogo in ["vip", "anello1", "anello2", "prato"]:
             pos = "stadio"
             vip = np_stadio // 100 * 10
             anello1 = np_stadio // 100 * 25
@@ -50,18 +29,14 @@ def crea(file, n_elementi):
             prezzo.append(r + 10)
             prezzo.append(r + 10)
             prezzo.append(r + 20)
-
         else:
             pos = "galleria"
             vip = np_galleria // 100 * 10
             platea = np_galleria // 100 * 20
             sopra = np_galleria - vip - platea
             posti = [platea, vip, sopra]
-            prezzo = []
             r = random.randint(5, 10)
-            prezzo.append(r + 10)
-            prezzo.append(r + 20)
-            prezzo.append(r)
+            prezzo = [r + 10, r + 20, r]
 
         posti_totali = sum(posti)
 
@@ -69,7 +44,7 @@ def crea(file, n_elementi):
         if pos == "stadio":
             for x in range(len(posti)):
                 dict_posti.update({stadio[x]: {"posti": posti[x], "prezzo": prezzo[x]}})
-        if pos == "galleria":
+        elif pos == "galleria":
             for x in range(len(posti)):
                 dict_posti.update({galleria[x]: {"posti": posti[x], "prezzo": prezzo[x]}})
 
@@ -78,7 +53,7 @@ def crea(file, n_elementi):
         anno = str(random.randint(2021, 2023))
         ora = str(random.randint(0, 23)).rjust(2, "0") + ":00:00"
 
-        data = anno + "-" + mese + "-" + giorno + " " + ora
+        data = f"{anno}-{mese}-{giorno} {ora}"
 
         # TODO spostare in json a parte
         coords = [{
@@ -195,9 +170,10 @@ def crea(file, n_elementi):
         }
 
         structure.update(coords[random.randint(0, len(coords) - 1)])
-        lst.append(structure)
+        res.append(structure)
 
-    json.dump(lst, open(file, "w", encoding="utf-8"), indent=4)
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(res, f, indent=4)
 
 
 if __name__ == "__main__":

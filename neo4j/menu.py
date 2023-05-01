@@ -1,5 +1,4 @@
 import os
-import menu
 from stagemodel import Neo4jModel, Scuola
 from seeder_es2 import seeder
 
@@ -76,9 +75,10 @@ def create_relation(neo4j_model):
     option_create_relation = input("Inserisci scelta: ")
     try:
         option_create_relation = int(option_create_relation)
-    except:
+    except ValueError:
         # Scelta non presente
         option_create_relation = -1
+
     if option_create_relation == 9:
         return 0
     
@@ -188,9 +188,10 @@ def delete_node(neo4j_model):
     option_delete_node = input("Inserisci scelta: ")
     try:
         option_delete_node = int(option_delete_node)
-    except:
+    except ValueError:
         # Scelta non presente
         option_delete_node = -1
+
     if option_delete_node == 9:
         return 0
 
@@ -200,15 +201,11 @@ def delete_node(neo4j_model):
         course = input("Inserisci il corso: ")
         
         try:
-            result = neo4j_model.delete_node(neo4j_model.get_id("S", name=name, course=course))
-        except:
-            result = -1
-            
-        if result != -1:
+            neo4j_model.delete_node(neo4j_model.get_id("S", name=name, course=course))
             print("Cancellazione alunno riuscita")
-        else:
+        except:
             print("Cancellazione alunno non riuscita")
-            
+
         input("Continua...")
         
     elif option_delete_node == 2:
@@ -218,15 +215,11 @@ def delete_node(neo4j_model):
         subject = input("Inserisci la materia: ")
         
         try:
-            result = neo4j_model.delete_node(neo4j_model.get_id("P", name=name, surname=surname, subject=subject))
-        except:
-            result = -1
-            
-        if result != -1:
+            neo4j_model.delete_node(neo4j_model.get_id("P", name=name, surname=surname, subject=subject))
             print("Cancellazione professore riuscita")
-        else:
+        except:
             print("Cancellazione professore non riuscita")
-            
+
         input("Continua...")
 
     elif option_delete_node == 3:
@@ -235,16 +228,13 @@ def delete_node(neo4j_model):
         desc = input("Inserisci la descrizione: ")
         
         try:
-            result = neo4j_model.delete_node(neo4j_model.get_id("C", name=name, desc=desc))
-        except:
-            result = -1
-            
-        if result != -1:
+            neo4j_model.delete_node(neo4j_model.get_id("C", name=name, desc=desc))
             print("Cancellazione azienda riuscita")
-        else:
+        except:
             print("Cancellazione azienda non riuscita")
-            
+
         input("Continua...")
+
     return 0
 
 def find_best(neo4j_model):
@@ -252,9 +242,10 @@ def find_best(neo4j_model):
     option_find_best_prof = input("Inserisci scelta: ")
     try:
         option_find_best_prof = int(option_find_best_prof)
-    except:
+    except ValueError:
         # Scelta non presente
         option_find_best_prof = -1
+
     if option_find_best_prof == 9:
         return 0
     
@@ -285,7 +276,7 @@ def main_menu(neo4j_model):
 
         try:
             option = int(option)
-        except:
+        except ValueError:
             # Scelta non presente
             option = -1
 
@@ -294,7 +285,7 @@ def main_menu(neo4j_model):
             os.system("cls")
             break
 
-        elif option not in [x for x in range(0, 7)]:
+        elif option not in list(range(7)):
             print("Scelta non presente")
             input("Premi un tasto per continuare")
             continue
@@ -305,17 +296,17 @@ def main_menu(neo4j_model):
             
         # Crea relazione
         elif option == 2:
-            option = create_relation(neo4j_model)
+            create_relation(neo4j_model)
             continue
         
         # Cancella nodo
         elif option == 3:
-            option = delete_node(neo4j_model)
+            delete_node(neo4j_model)
             continue
         
         # Cerca il miglior prof
         elif option == 4:
-            option = find_best(neo4j_model)
+            find_best(neo4j_model)
             continue
         
         # Pulizia db

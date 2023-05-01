@@ -2,7 +2,6 @@ from neo4j import GraphDatabase
 
 
 class Neo4jModel:
-
     def __init__(self, uri, username="", password=""):
         self.driver = GraphDatabase.driver(uri, auth=(username, password))
         print(f"Collegato al database {uri}")
@@ -14,9 +13,9 @@ class Neo4jModel:
     def ristruttura_dict(self, d: dict):
         res = "{ "
         for x in d.keys():
-            if type(d[x]) == str:
+            if isinstance(d[x], str):
                 res += f"{x}: \"{d[x]}\""
-            elif type(d[x]) == bool:
+            if isinstance(d[x], bool):
                 res += f"{x}: {self.__return_str_check(d[x])}"
             else:
                 res += f"{x}: {d[x]}"
@@ -40,14 +39,14 @@ class Neo4jModel:
         with self.driver.session() as session:
             # non vanno entrambe le righe sottostanti
             id_nodo = session.run(
-                f"CREATE (n:{label} " + diz + ") RETURN id(n)").data()[0]['id(n)']
+                f"CREATE (n:{label} " + diz + ") RETURN id(n)"
+            ).data()[0]['id(n)']
         print('Nodo creato correttamente')
         return id_nodo
 
     def get_id(self, label, **parms):
         diz = self.ristruttura_dict(parms)
         with self.driver.session() as session:
-            
             return session.run(f"MATCH (n:{label} " + diz + ") RETURN id(n)").data()[0]['id(n)']
 
     def create_link(self, origin_id, destination_id, label, **parms):
@@ -80,7 +79,6 @@ class Neo4jModel:
                         WHERE id(n) = {node_id}
                         DELETE n""")
             print('nodo eliminato con successo')
-    # lollo funziona secondo te? (y/n)
 
     def empty_database(self):
         with self.driver.session() as session:
@@ -88,14 +86,11 @@ class Neo4jModel:
 
 
 class Scuola(Neo4jModel):
-
     def __init__(self, uri, username="", password=""):
         super().__init__(uri, username, password)
-    # cercare il miglior prof che può fungere da collegamento con l'azienda
 
     def best_prof(self, id_azienda):
-        '''Dato un id_azienda, restituisce un array di dizionari contenente i migliori 3 prof'''
-        
+        """Dato un id_azienda, restituisce un array di dizionari contenente i migliori tre prof"""
         with self.driver.session() as session:
             return session.run(f"""
                         MATCH (p: P)-[:INSEGNA_A]->(s:S), (p)-[:CONTATTO_IN]->(a:C)
@@ -106,16 +101,15 @@ class Scuola(Neo4jModel):
 
 
 class Montagna(Neo4jModel):
-
     def __init__(self, uri, username="", password=""):
         super().__init__(uri, username, password)
 
-    # proporre il percorso entro distanze definite per un certo numero di persone
-    # Tempistica espressa in ore (30 min = 0.5)
     def best_track(self, n_persone, ora_min, ora_max):
-        assert type(ora_min) == int and type(ora_max) == int
+        """Proporre il percorso entro distanze definite per un certo numero di persone"""
+        assert isinstance(ora_min, int)
+        assert isinstance(ora_max, int)
         with self.driver.session() as session:
-            # TODO
+            # TODO implement
             """
             MATCH percorso=(p:partenza)-[:SENTIERO*]-(a:arrivo)
             return 

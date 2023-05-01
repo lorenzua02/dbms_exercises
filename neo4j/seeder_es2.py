@@ -1,77 +1,95 @@
 from stagemodel import Neo4jModel
 
 
-def seeder(obj):
+def seeder(conn):
     """
     - Professor: name, surname, subject
     - Company: name, desc
     - Student: name, course
     """
 
-    idnodo1 = obj.create_node("P", name="aa", surname="bbb", subject="ccc")
-    idnodo2 = obj.create_node("S", name="ddd", course="eee")
+    idnodo1 = conn.create_node("P", name="aa", surname="bbb", subject="ccc")
+    idnodo2 = conn.create_node("S", name="ddd", course="eee")
+    conn.create_link(idnodo1, idnodo2, "LABEL")
 
-    obj.create_link(idnodo1, idnodo2, "LABEL")
+    data = [
+        ("Marco", "Rossi", "matematica"),
+        ("Mario", "Bianchi", "inglese"),
+        ("Andrea", "Verdi", "reti"),
+        ("Antonio", "Russo", "ML"),
+        ("Chiara", "Esposito", "statistica"),
+        ("Maria", "Mariani", "AI"),
+    ]
+    p = []
+    for row in data:
+        p.append(conn.create_node("P", name=row[0], surname=row[1], subject=row[2]))
 
-    p1 = obj.create_node("P", name="Marco", surname="Rossi", subject="matematica")
-    p2 = obj.create_node("P", name="Mario", surname="Bianchi", subject="inglese")
-    p3 = obj.create_node("P", name="Andrea", surname="Verdi", subject="reti")
-    p4 = obj.create_node("P", name="Antonio", surname="Russo", subject="ML")
-    p5 = obj.create_node("P", name="Chiara", surname="Esposito", subject="statistica")
-    p6 = obj.create_node("P", name="Maria", surname="Mariani", subject="AI")
+    data = [
+        ("Luigi", "ML"),
+        ("Mario", "ML"),
+        ("Martina", "ML"),
+        ("Giulia", "ML"),
+        ("Edoardp", "ML"),
+        ("Francesco", "ML"),
+        ("Mattia", "ML"),
+        ("Luca", "smart"),
+        ("Giuseppe", "smart"),
+        ("Franco", "smart"),
+        ("Giorgia", "smart"),
+        ("Marco", "smart"),
+    ]
+    s = []
+    for row in data:
+        s.append(conn.create_node("S", name=row[0], course=row[1]))
 
-    s1 = obj.create_node("S", name="Luigi", course="ML")
-    s2 = obj.create_node("S", name="Mario", course="ML")
-    s3 = obj.create_node("S", name="Martina", course="ML")
-    s4 = obj.create_node("S", name="Giulia", course="ML")
-    s5 = obj.create_node("S", name="Edoardp", course="ML")
-    s6 = obj.create_node("S", name="Francesco", course="ML")
-    s7 = obj.create_node("S", name="Mattia", course="ML")
-    s8 = obj.create_node("S", name="Luca", course="smart")
-    s9 = obj.create_node("S", name="Giuseppe", course="smart")
-    s10 = obj.create_node("S", name="Franco", course="smart")
-    s11 = obj.create_node("S", name="Giorgia", course="smart")
-    s12 = obj.create_node("S", name="Marco", course="smart")
+    data = [
+        ("tesla", "auto"),
+        ("atzure", "cloud"),
+        ("amazon", "e-commerce"),
+        ("ibm", "IT"),
+        ("apple", "device"),
+    ]
+    a = []
+    for row in data:
+        a.append(conn.create_node("C", name=row[0], desc=row[1]))
 
-    a1 = obj.create_node("C", name="tesla", desc="auto")
-    a2 = obj.create_node("C", name="atzure", desc="cloud")
-    a3 = obj.create_node("C", name="amazon", desc="e-commerce")
-    a4 = obj.create_node("C", name="ibm", desc="IT")
-    a5 = obj.create_node("C", name="apple", desc="device")
+    links = [
+        (s[0], a[0], "lavora_in"),
+        (s[1], a[1], "lavora_in"),
+        (s[2], a[2], "lavora_in"),
+        (s[3], a[3], "lavora_in"),
+        (s[4], a[3], "lavora_in"),
+        (s[5], a[0], "lavora_in"),
+        (s[6], a[1], "lavora_in"),
+        (s[7], a[0], "lavora_in"),
 
-    obj.create_link( s1, a1, "lavora_in")
-    obj.create_link( s2, a2, "lavora_in")
-    obj.create_link( s3, a3, "lavora_in")
-    obj.create_link( s4, a4, "lavora_in")
-    obj.create_link( s5, a4, "lavora_in")
-    obj.create_link( s6, a1, "lavora_in")
-    obj.create_link( s7, a2, "lavora_in")
-    obj.create_link( s8, a1, "lavora_in")
+        (p[0], s[0], "insegna_a"),
+        (p[0], s[1], "insegna_a"),
+        (p[0], s[2], "insegna_a"),
+        (p[0], s[3], "insegna_a"),
+        (p[0], s[3], "insegna_a"),
+        (p[1], s[5], "insegna_a"),
+        (p[1], s[6], "insegna_a"),
+        (p[2], s[7], "insegna_a"),
+        (p[2], s[8], "insegna_a"),
+        (p[3], s[8], "insegna_a"),
+        (p[3], s[9], "insegna_a"),
+        (p[3], s[10], "insegna_a"),
+        (p[3], s[11], "insegna_a"),
+        (p[4], s[11], "insegna_a"),
 
-    obj.create_link( p1, s1, "insegna_a")
-    obj.create_link( p1, s2, "insegna_a")
-    obj.create_link( p1, s3, "insegna_a")
-    obj.create_link( p1, s4, "insegna_a")
-    obj.create_link( p1, s5, "insegna_a")
-    obj.create_link( p2, s6, "insegna_a")
-    obj.create_link( p2, s7, "insegna_a")
-    obj.create_link( p3, s8, "insegna_a")
-    obj.create_link( p3, s9, "insegna_a")
-    obj.create_link( p4, s9, "insegna_a")
-    obj.create_link( p4, s10, "insegna_a")
-    obj.create_link( p4, s11, "insegna_a")
-    obj.create_link( p4, s12, "insegna_a")
-    obj.create_link( p5, s12, "insegna_a")
-
-    obj.create_link(p6, a5, "contatto_in")
-    obj.create_link(p1, a1, "contatto_in")
-    obj.create_link(p1, a2, "contatto_in")
-    obj.create_link(p1, a3, "contatto_in")
-    obj.create_link(p5, a4, "contatto_in")
-    obj.create_link(p5, a1, "contatto_in")
-    obj.create_link(p4, a3, "contatto_in")
-    obj.create_link(p5, a3, "contatto_in")
+        (p[5], a[3], "contatto_in"),
+        (p[0], a[0], "contatto_in"),
+        (p[0], a[1], "contatto_in"),
+        (p[0], a[2], "contatto_in"),
+        (p[4], a[3], "contatto_in"),
+        (p[4], a[0], "contatto_in"),
+        (p[3], a[2], "contatto_in"),
+        (p[4], a[2], "contatto_in"),
+    ]
+    for row in links:
+        conn.create_link(row[0], row[1], row[2])
 
 
 if __name__ == '__main__':
-    seeder(obj = Neo4jModel("neo4j://localhost:7687", "", ""))
+    seeder(conn=Neo4jModel("neo4j://localhost:7687", "", ""))
